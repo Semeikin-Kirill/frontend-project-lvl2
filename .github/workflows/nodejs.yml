@@ -19,4 +19,4 @@
          env:
            CI: true
        - name: Linter
-         run: make lint
+         run:  make lint
