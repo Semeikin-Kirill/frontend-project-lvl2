@@ -8,7 +8,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "test": "npx -n '--experimental-vm-modules --no-warnings' jest --colors"
+    "test": "npx jest --bail"
   },
   "repository": {
     "type": "git",

@@ -2,6 +2,7 @@
 [![Actions Status](https://github.com/Semeikin-Kirill/frontend-project-lvl2/workflows/hexlet-check/badge.svg)](https://github.com/Semeikin-Kirill/frontend-project-lvl2/actions)
 [![Maintainability](https://api.codeclimate.com/v1/badges/3f12f3ac21566fb467fd/maintainability)](https://codeclimate.com/github/Semeikin-Kirill/frontend-project-lvl2/maintainability)
 [![Node CI](https://github.com/Semeikin-Kirill/frontend-project-lvl2/actions/workflows/nodejs.yml/badge.svg)](https://github.com/Semeikin-Kirill/frontend-project-lvl2/actions/workflows/nodejs.yml)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/3f12f3ac21566fb467fd/test_coverage)](https://codeclimate.com/github/Semeikin-Kirill/frontend-project-lvl2/test_coverage)
 ## Difference calculator
 
 ### Setup
