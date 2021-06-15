@@ -1,19 +1,17 @@
  name: Node CI
- on:
-   - push
- jobs:
-   build:
+ 
+on: push
 
-     rins-on: ubuntu-latest
-     strategy:
-       matrix:
-         node-version: [14.x]
-     steps:
-       - uses: actions/checkout@v2
-       - uses: actions/setup-node@v1
-         with:
-           node-version: ${{ matrix.node-version }}
-       - run: make install
-         env:
-           CI: true
-       - run: make lint
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '14'
+      - run: make install
+        env:
+          CI: true
+      - run: make lint
