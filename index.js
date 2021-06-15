@@ -1,13 +1,15 @@
-import fs from "fs";
-import path from "path";
-import _ from "lodash";
+import fs from 'fs';
+import path from 'path';
+import _ from 'lodash';
 
 export default (filePath1, filePath2) => {
-  const regex = /json$/;
-  if (!regex.test(filePath1) || !regex.test(filePath2)) {
-    throw new Error("Format");
+  if (
+    path.extname(filePath1) !== '.json'
+    || path.extname(filePath2) !== '.json'
+  ) {
+    throw new Error('Invalid format');
   }
-  let result = [];
+  const result = [];
   const currentDirectory = process.cwd();
   const correctPathFile1 = path.resolve(currentDirectory, filePath1);
   const correctPathFile2 = path.resolve(currentDirectory, filePath2);
@@ -20,13 +22,17 @@ export default (filePath1, filePath2) => {
   const keys = _.union(keys1, keys2);
   _.sortBy(keys).forEach((key) => {
     if (_.has(obj1, key) && _.has(obj2, key)) {
-      obj1[key] === obj2[key]
-        ? result.push(`  ${key}: ${obj1[key]}`)
-        : result.push(`- ${key}: ${obj1[key]}`, `+ ${key}: ${obj2[key]}`);
-    } else
-      _.has(obj1, key)
-        ? result.push(`- ${key}: ${obj1[key]}`)
-        : result.push(`+ ${key}: ${obj2[key]}`);
+      if (obj1[key] === obj2[key]) {
+        result.push(`  ${key}: ${obj1[key]}`);
+      } else {
+        result.push(`- ${key}: ${obj1[key]}`, `+ ${key}: ${obj2[key]}`);
+      }
+    } else {
+      const string = _.has(obj1, key)
+        ? `- ${key}: ${obj1[key]}`
+        : `+ ${key}: ${obj2[key]}`;
+      result.push(string);
+    }
   });
-  console.log(`{\n${result.join("\n")}\n}`);
+  return `{\n ${result.join('\n ')}\n}`;
 };
