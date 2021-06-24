@@ -1,24 +1,13 @@
-import fs from 'fs';
 import path from 'path';
 import _ from 'lodash';
+import parsers from './src/parsers.js';
 
-const getPath = (directory, filePath) => path.resolve(directory, filePath);
-
-const readFile = (file) => fs.readFileSync(file);
-
-const parseJson = (directory, filePath) => {
-  if (path.extname(filePath) !== '.json') {
-    throw new Error('Invalid format');
-  }
-  const file = readFile(getPath(directory, filePath));
-  return JSON.parse(file);
-};
-
-export default (filePath1, filePath2) => {
+export default (file1, file2) => {
   const result = [];
-  const currentDirectory = process.cwd();
-  const objectFile1 = parseJson(currentDirectory, filePath1);
-  const objectFile2 = parseJson(currentDirectory, filePath2);
+  const filePath1 = path.resolve(process.cwd(), file1);
+  const filePath2 = path.resolve(process.cwd(), file2);
+  const objectFile1 = parsers(filePath1);
+  const objectFile2 = parsers(filePath2);
   const commomObject = { ...objectFile1, ...objectFile2 };
   const keys = Object.keys(commomObject);
   _.sortBy(keys).forEach((key) => {

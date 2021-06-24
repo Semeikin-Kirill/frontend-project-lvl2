@@ -18,3 +18,11 @@ $ gendiff <filepath1> <filepath2>
 ```
 
 [![asciicast](https://asciinema.org/a/pEWUDEcmTkzrFEjQw3j3OOtxG.svg)](https://asciinema.org/a/pEWUDEcmTkzrFEjQw3j3OOtxG)
+
+### Comparison of flat files (YAML)
+
+```
+$ gendiff <filepath1> <filepath2>
+```
+
+[![asciicast](https://asciinema.org/a/tATx8ZBpejM30acmHZtl0SBV6.svg)](https://asciinema.org/a/tATx8ZBpejM30acmHZtl0SBV6)
