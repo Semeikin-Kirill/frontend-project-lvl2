@@ -40,3 +40,11 @@ $ gendiff --format plain <filepath1> <filepath2>
 ```
 
 [![asciicast](https://asciinema.org/a/E3BWuuJR4nkEpZ8Cg3kIMhIor.svg)](https://asciinema.org/a/E3BWuuJR4nkEpZ8Cg3kIMhIor)
+
+### Get the differences in json format
+
+```
+$ gendiff -- format json <filepath1> <filepath2>
+```
+
+[![asciicast](https://asciinema.org/a/wyC0TMDSunJckdaaJKsgwlcjC.svg)](https://asciinema.org/a/wyC0TMDSunJckdaaJKsgwlcjC)
