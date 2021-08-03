@@ -11,5 +11,5 @@ export default (filePath) => {
   if (format === '.yml' || format === '.ymal') {
     return yaml.load(data, { json: true });
   }
-  throw new Error('Invalid format');
+  throw new Error(`'${format}' this format is not supported`);
 };

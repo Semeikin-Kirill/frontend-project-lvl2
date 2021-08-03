@@ -32,3 +32,11 @@ $ gendiff <filepath1> <filepath2>
 ### Nested structure comparison (JSON and YAML)
 
 [![asciicast](https://asciinema.org/a/iWpDbiI1ZvQv8NZaUVuJXGLIH.svg)](https://asciinema.org/a/iWpDbiI1ZvQv8NZaUVuJXGLIH)
+
+### Flat format
+
+```
+$ gendiff --format plain <filepath1> <filepath2>
+```
+
+[![asciicast](https://asciinema.org/a/E3BWuuJR4nkEpZ8Cg3kIMhIor.svg)](https://asciinema.org/a/E3BWuuJR4nkEpZ8Cg3kIMhIor)
