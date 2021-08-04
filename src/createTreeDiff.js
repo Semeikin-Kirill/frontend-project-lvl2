@@ -16,21 +16,23 @@ const createTreeDiff = (obj1, obj2) => {
   }
   const keys = Object.keys({ ...obj1, ...obj2 });
   return _.sortBy(keys).reduce((tree, key) => {
+    const valueObj1 = obj1[key];
+    const valueObj2 = obj2[key];
     if (_.has(obj2, key)) {
       if (!_.has(obj1, key)) {
-        const obj = { [`+ ${key}`]: createTreeDiff(obj2[key], obj2[key]) };
+        const obj = { [`+ ${key}`]: createTreeDiff(valueObj2, valueObj2) };
         return { ...tree, ...obj };
       }
-      if (isEqual(obj1[key], obj2[key])) {
-        const obj = { [`  ${key}`]: createTreeDiff(obj1[key], obj2[key]) };
+      if (isEqual(valueObj1, valueObj2)) {
+        const obj = { [`  ${key}`]: createTreeDiff(valueObj1, valueObj2) };
         return { ...tree, ...obj };
       }
-      const value1 = createTreeDiff(obj1[key], obj1[key]);
-      const value2 = createTreeDiff(obj2[key], obj2[key]);
+      const value1 = createTreeDiff(valueObj1, valueObj1);
+      const value2 = createTreeDiff(valueObj2, valueObj2);
       const obj = { [`- ${key}`]: value1, [`+ ${key}`]: value2 };
       return { ...tree, ...obj };
     }
-    return { ...tree, [`- ${key}`]: createTreeDiff(obj1[key], obj1[key]) };
+    return { ...tree, [`- ${key}`]: createTreeDiff(valueObj1, valueObj1) };
   }, {});
 };
 
