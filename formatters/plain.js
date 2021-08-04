@@ -17,7 +17,7 @@ const getValue = (value) => {
 
 export default (tree) => {
   const iter = (obj, path) => {
-    if (typeof obj !== 'object') {
+    if (!_.isObject(obj)) {
       return [];
     }
     const keys = Object.keys(obj);
@@ -35,11 +35,12 @@ export default (tree) => {
           );
         }
         return acc.concat(
-          `Property '${updatePath.join(
-            '.',
-          )}' was added with value: ${getValue(value)}`,
+          `Property '${updatePath.join('.')}' was added with value: ${getValue(
+            value,
+          )}`,
         );
-      } if (key[0] === '-') {
+      }
+      if (key[0] === '-') {
         if (!isKey(key, '+', obj)) {
           return acc.concat(`Property '${updatePath.join('.')}' was removed`);
         }
