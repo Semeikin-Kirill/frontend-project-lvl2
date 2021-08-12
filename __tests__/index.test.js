@@ -2,7 +2,7 @@ import { test, expect } from '@jest/globals';
 import url from 'url';
 import fs from 'fs';
 import path from 'path';
-import genDiff from '../index.js';
+import genDiff from '../src/index.js';
 
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,32 +13,19 @@ const fileJson1 = getFixturePath('file1.json');
 const fileJson2 = getFixturePath('file2.json');
 const fileYml1 = getFixturePath('file1.yml');
 const fileYml2 = getFixturePath('file2.yml');
-const answerFormatStylish = readFile('expected_file.txt').trim();
-const answerFormatPlain = readFile('expected_file2.txt').trim();
-const answerFormatJson = readFile('expected.json');
 
-test('json comparison', () => {
-  expect(genDiff(fileJson1, fileJson2)).toBe(answerFormatStylish);
-});
-
-test('yml comparison', () => {
-  expect(genDiff(fileYml1, fileYml2)).toBe(answerFormatStylish);
-});
-
-test('json comparison in format plain', () => {
-  expect(genDiff(fileJson1, fileJson2, 'plain')).toBe(answerFormatPlain);
-});
-
-test('yml comparison in format plain', () => {
-  expect(genDiff(fileYml1, fileYml2, 'plain')).toBe(answerFormatPlain);
-});
-
-test('format json', () => {
-  expect(genDiff(fileJson1, fileJson2, 'json')).toBe(answerFormatJson);
-});
-
-test('throw', () => {
-  expect(() => genDiff('file1.js', 'file2.json')).toThrow();
-  expect(() => genDiff('file1.json', 'file2.js')).toThrow();
-  expect(() => genDiff('file1.js', 'file2.js')).toThrow();
-});
+test.each`
+  fileName1    | fileName2    | format       | expected
+  ${fileJson1} | ${fileJson2} | ${'stylish'} | ${readFile('expected_file.txt').trim()}
+  ${fileYml1}  | ${fileYml2}  | ${'stylish'} | ${readFile('expected_file.txt').trim()}
+  ${fileYml1}  | ${fileYml2}  | ${'plain'}   | ${readFile('expected_file2.txt').trim()}
+  ${fileJson1} | ${fileJson2} | ${'plain'}   | ${readFile('expected_file2.txt').trim()}
+  ${fileJson1} | ${fileJson2} | ${'json'}    | ${readFile('expected.json')}
+`(
+  'genDiff($fileName1, $fileName2, $format)',
+  ({
+    fileName1, fileName2, format, expected,
+  }) => {
+    expect(genDiff(fileName1, fileName2, format)).toBe(expected);
+  },
+);

@@ -1,15 +1,15 @@
-import { readFileSync } from 'fs';
 import yaml from 'js-yaml';
-import path from 'path';
+import _ from 'lodash';
 
-export default (filePath) => {
-  const data = readFileSync(filePath);
-  const format = path.extname(filePath);
-  if (format === '.json') {
-    return JSON.parse(data);
+const formats = {
+  '.json': (data) => JSON.parse(data),
+  '.yml': (data) => yaml.load(data, { json: true }),
+  '.ymal': (data) => yaml.load(data, { json: true }),
+};
+
+export default (data, format) => {
+  if (!_.has(formats, format)) {
+    throw new Error(`this format is not supported '${format}'`);
   }
-  if (format === '.yml' || format === '.ymal') {
-    return yaml.load(data, { json: true });
-  }
-  throw new Error(`'${format}' this format is not supported`);
+  return formats[format](data);
 };
