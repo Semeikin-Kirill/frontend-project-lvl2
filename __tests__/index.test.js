@@ -16,16 +16,18 @@ const fileYml2 = getFixturePath('file2.yml');
 
 test.each`
   fileName1    | fileName2    | format       | expected
-  ${fileJson1} | ${fileJson2} | ${'stylish'} | ${readFile('expected_file.txt').trim()}
-  ${fileYml1}  | ${fileYml2}  | ${'stylish'} | ${readFile('expected_file.txt').trim()}
-  ${fileYml1}  | ${fileYml2}  | ${'plain'}   | ${readFile('expected_file2.txt').trim()}
-  ${fileJson1} | ${fileJson2} | ${'plain'}   | ${readFile('expected_file2.txt').trim()}
-  ${fileJson1} | ${fileJson2} | ${'json'}    | ${readFile('expected.json')}
+  ${fileJson1} | ${fileJson2} | ${'stylish'} | ${'expected_file.txt'}
+  ${fileYml1}  | ${fileYml2}  | ${'stylish'} | ${'expected_file.txt'}
+  ${fileYml1}  | ${fileYml2}  | ${'plain'}   | ${'expected_file2.txt'}
+  ${fileJson1} | ${fileJson2} | ${'plain'}   | ${'expected_file2.txt'}
+  ${fileJson1} | ${fileJson2} | ${'json'}    | ${'expected.json'}
 `(
   'genDiff($fileName1, $fileName2, $format)',
   ({
     fileName1, fileName2, format, expected,
   }) => {
-    expect(genDiff(fileName1, fileName2, format)).toBe(expected);
+    expect(genDiff(fileName1, fileName2, format)).toBe(
+      readFile(expected).trim(),
+    );
   },
 );

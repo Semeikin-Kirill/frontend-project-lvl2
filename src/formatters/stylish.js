@@ -1,20 +1,46 @@
 import _ from 'lodash';
 
-export default (value, replacer = ' ', spacesCount = 4) => {
-  const iter = (currentValue, depth) => {
-    if (!_.isObject(currentValue)) {
-      return String(currentValue);
-    }
+const isObject = (value) => _.isArray(value) && value.every(_.isPlainObject);
 
-    const indentSize = depth * spacesCount - 2;
-    const currentIndent = replacer.repeat(indentSize);
-    const bracketIndent = replacer.repeat(indentSize - 2);
-    const lines = Object.entries(currentValue).map(
-      ([key, val]) => `${currentIndent}${key}: ${iter(val, depth + 1)}`,
-    );
-
-    return ['{', ...lines, `${bracketIndent}}`].join('\n');
+const nodeStringify = (treeDiff, replacer = ' ', spacesCount = 4) => {
+  const iter = (tree, depth) => {
+    const indent = replacer.repeat(depth * spacesCount - 2);
+    const indentBrackets = replacer.repeat(depth * spacesCount);
+    const result = tree.map((node) => {
+      const { name, type, children } = node;
+      const value = isObject(children)
+        ? ['{', iter(children, depth + 1), `${indentBrackets}}`].join('\n')
+        : children;
+      if (type === 'deleted') {
+        return `${indent}- ${name}: ${value}`;
+      }
+      if (type === 'added') {
+        return `${indent}+ ${name}: ${value}`;
+      }
+      if (type === 'unchanged') {
+        return `${indent}  ${name}: ${value}`;
+      }
+      if (type === 'changed') {
+        const [afterChildren, beforeChildren] = value;
+        const valueAfter = isObject(afterChildren)
+          ? ['{', iter(afterChildren, depth + 1), `${indentBrackets}}`].join(
+            '\n',
+          )
+          : afterChildren;
+        const valueBefore = isObject(beforeChildren)
+          ? ['{', iter(beforeChildren, depth + 1), `${indentBrackets}}`].join(
+            '\n',
+          )
+          : beforeChildren;
+        const after = `${indent}- ${name}: ${valueAfter}`;
+        const before = `${indent}+ ${name}: ${valueBefore}`;
+        return [after, before].join('\n');
+      }
+      return `${indent}  ${name}: ${value}`;
+    });
+    return [...result].join('\n');
   };
-
-  return iter(value, 1);
+  return ['{', iter(treeDiff, 1), '}'].join('\n');
 };
+
+export default nodeStringify;

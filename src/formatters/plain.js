@@ -1,53 +1,42 @@
 import _ from 'lodash';
 
-const isKey = (key, operator, obj) => {
-  const newKey = key.replace(key[0], operator);
-  return _.has(obj, newKey);
-};
-
 const getValue = (value) => {
-  if (_.isObject(value)) {
+  if (_.isArray(value)) {
     return '[complex value]';
   }
-  if (typeof value === 'string') {
-    return `'${value}'`;
-  }
-  return value;
+  return _.isString(value) ? `'${value}'` : value;
 };
 
-export default (tree) => {
-  const iter = (obj, path) => {
-    if (!_.isObject(obj)) {
-      return [];
-    }
-    const keys = Object.keys(obj);
-    return keys.reduce((acc, key) => {
-      const updatePath = path.concat(key.slice(2));
-      if (key[0] === '+') {
-        const value = obj[key];
-        if (isKey(key, '-', obj)) {
-          const oppositeKey = key.replace('+', '-');
-          const valueOpposite = obj[oppositeKey];
-          return acc.concat(
-            `Property '${updatePath.join('.')}' was updated. From ${getValue(
-              valueOpposite,
-            )} to ${getValue(value)}`,
-          );
-        }
+const getValueChanged = (children) => children.map(getValue);
+
+export default (treeDiff) => {
+  const iter = (tree, listPath) => {
+    const result = tree.reduce((acc, node) => {
+      const { name, type, children } = node;
+      const path = listPath.concat(name);
+      const value = getValue(children);
+      if (type === 'added') {
         return acc.concat(
-          `Property '${updatePath.join('.')}' was added with value: ${getValue(
-            value,
-          )}`,
+          `Property '${path.join('.')}' was added with value: ${value}`,
         );
       }
-      if (key[0] === '-') {
-        if (!isKey(key, '+', obj)) {
-          return acc.concat(`Property '${updatePath.join('.')}' was removed`);
-        }
+      if (type === 'deleted') {
+        return acc.concat(`Property '${path.join('.')}' was removed`);
       }
-      return acc.concat(iter(obj[key], updatePath));
+      if (type === 'changed') {
+        const [afterChild, beforeChild] = getValueChanged(children);
+        return acc.concat(
+          `Property '${path.join(
+            '.',
+          )}' was updated. From ${afterChild} to ${beforeChild}`,
+        );
+      }
+      if (type === 'nested') {
+        return acc.concat(iter(children, path));
+      }
+      return acc;
     }, []);
+    return result;
   };
-
-  return iter(tree, []).join('\n');
+  return iter(treeDiff, []).join('\n');
 };
