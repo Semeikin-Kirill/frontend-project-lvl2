@@ -1,38 +1,35 @@
 import _ from 'lodash';
 
 const getValue = (value) => {
-  if (_.isArray(value)) {
+  if (_.isPlainObject(value)) {
     return '[complex value]';
   }
   return _.isString(value) ? `'${value}'` : value;
 };
 
-const getValueChanged = (children) => children.map(getValue);
-
 export default (treeDiff) => {
   const iter = (tree, listPath) => {
     const result = tree.reduce((acc, node) => {
-      const { name, type, children } = node;
-      const path = listPath.concat(name);
-      const value = getValue(children);
-      if (type === 'added') {
+      const path = listPath.concat(node.name);
+      if (node.type === 'added') {
         return acc.concat(
-          `Property '${path.join('.')}' was added with value: ${value}`,
+          `Property '${path.join('.')}' was added with value: ${getValue(
+            node.value,
+          )}`,
         );
       }
-      if (type === 'deleted') {
+      if (node.type === 'deleted') {
         return acc.concat(`Property '${path.join('.')}' was removed`);
       }
-      if (type === 'changed') {
-        const [afterChild, beforeChild] = getValueChanged(children);
+      if (node.type === 'changed') {
         return acc.concat(
-          `Property '${path.join(
-            '.',
-          )}' was updated. From ${afterChild} to ${beforeChild}`,
+          `Property '${path.join('.')}' was updated. From ${getValue(
+            node.value1,
+          )} to ${getValue(node.value2)}`,
         );
       }
-      if (type === 'nested') {
-        return acc.concat(iter(children, path));
+      if (node.type === 'nested') {
+        return acc.concat(iter(node.children, path));
       }
       return acc;
     }, []);

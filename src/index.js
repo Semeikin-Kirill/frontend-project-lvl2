@@ -10,8 +10,8 @@ const extractFormat = (fileName) => path.extname(fileName).substr(1);
 
 const getData = (filePath) => {
   const rawData = readFileSync(filePath);
-  const formatFile = extractFormat(filePath);
-  return parse(rawData, formatFile);
+  const dataFormat = extractFormat(filePath);
+  return parse(rawData, dataFormat);
 };
 
 export default (fileName1, fileName2, formatName = 'stylish') => {

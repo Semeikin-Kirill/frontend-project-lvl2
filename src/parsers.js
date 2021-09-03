@@ -7,9 +7,9 @@ const formats = {
   ymal: (data) => yaml.load(data, { json: true }),
 };
 
-export default (data, format) => {
-  if (!_.has(formats, format)) {
-    throw new Error(`this format is not supported '${format}'`);
+export default (data, formatName) => {
+  if (!_.has(formats, formatName)) {
+    throw new Error(`this format is not supported '${formatName}'`);
   }
-  return formats[format](data);
+  return formats[formatName](data);
 };
