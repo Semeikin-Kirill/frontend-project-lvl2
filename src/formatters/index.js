@@ -1,12 +1,12 @@
 import _ from 'lodash';
-import createFormatStylish from './stylish.js';
-import createFormatPlain from './plain.js';
-import createFormatJson from './json.js';
+import formatStylish from './stylish.js';
+import formatPlain from './plain.js';
+import formatJson from './json.js';
 
 const formats = {
-  plain: createFormatPlain,
-  stylish: createFormatStylish,
-  json: createFormatJson,
+  plain: formatPlain,
+  stylish: formatStylish,
+  json: formatJson,
 };
 
 export default (tree, formatName) => {

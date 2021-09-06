@@ -1,39 +1,31 @@
 import _ from 'lodash';
 
-const getValue = (value) => {
+const stringify = (value) => {
   if (_.isPlainObject(value)) {
     return '[complex value]';
   }
-  return _.isString(value) ? `'${value}'` : value;
+  return _.isString(value) ? `'${value}'` : String(value);
 };
 
 export default (treeDiff) => {
-  const iter = (tree, listPath) => {
-    const result = tree.reduce((acc, node) => {
-      const path = listPath.concat(node.name);
-      if (node.type === 'added') {
-        return acc.concat(
-          `Property '${path.join('.')}' was added with value: ${getValue(
-            node.value,
-          )}`,
-        );
-      }
-      if (node.type === 'deleted') {
-        return acc.concat(`Property '${path.join('.')}' was removed`);
-      }
-      if (node.type === 'changed') {
-        return acc.concat(
-          `Property '${path.join('.')}' was updated. From ${getValue(
-            node.value1,
-          )} to ${getValue(node.value2)}`,
-        );
-      }
-      if (node.type === 'nested') {
-        return acc.concat(iter(node.children, path));
-      }
-      return acc;
-    }, []);
-    return result;
-  };
+  const iter = (tree, path) => tree.flatMap((node) => {
+    const currentPath = path.concat(node.name).join('.');
+    switch (node.type) {
+      case 'added':
+        return `Property '${currentPath}' was added with value: ${stringify(
+          node.value,
+        )}`;
+      case 'deleted':
+        return `Property '${currentPath}' was removed`;
+      case 'changed':
+        return `Property '${currentPath}' was updated. From ${stringify(
+          node.value1,
+        )} to ${stringify(node.value2)}`;
+      case 'nested':
+        return iter(node.children, [currentPath]);
+      default:
+        return [];
+    }
+  });
   return iter(treeDiff, []).join('\n');
 };
