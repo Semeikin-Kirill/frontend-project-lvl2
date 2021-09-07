@@ -6,11 +6,7 @@ const symbols = {
   unchanged: ' ',
 };
 
-const getIndent = (depth) => {
-  const replacer = ' ';
-  const spacesCount = 4;
-  return replacer.repeat(depth * spacesCount - 2);
-};
+const getIndent = (depth, spacesCount = 4) => ' '.repeat(depth * spacesCount - 2);
 
 const stringify = (node, depth) => {
   if (!_.isPlainObject(node)) {
@@ -37,16 +33,20 @@ const nodeStringify = (treeDiff) => {
               `${indent}  }`,
             ].join('\n')}`;
           case 'changed': {
-            const afterValue = stringify(node.value1, depth);
-            const beforeValue = stringify(node.value2, depth);
-            const after = `${indent}- ${node.name}: ${afterValue}`;
-            const before = `${indent}+ ${node.name}: ${beforeValue}`;
-            return [after, before].join('\n');
+            const value1 = stringify(node.value1, depth);
+            const value2 = stringify(node.value2, depth);
+            const node1 = `${indent}- ${node.name}: ${value1}`;
+            const node2 = `${indent}+ ${node.name}: ${value2}`;
+            return [node1, node2].join('\n');
           }
-          default: {
+          case 'added':
+          case 'deleted':
+          case 'unchanged': {
             const value = stringify(node.value, depth);
             return `${indent}${symbols[node.type]} ${node.name}: ${value}`;
           }
+          default:
+            throw new Error(`Wrong type: ${node.type}`);
         }
       })
       .join('\n');

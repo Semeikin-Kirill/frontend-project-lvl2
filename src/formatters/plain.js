@@ -4,7 +4,10 @@ const stringify = (value) => {
   if (_.isPlainObject(value)) {
     return '[complex value]';
   }
-  return _.isString(value) ? `'${value}'` : String(value);
+  if (_.isString(value)) {
+    return `'${value}'`;
+  }
+  return String(value);
 };
 
 export default (treeDiff) => {
